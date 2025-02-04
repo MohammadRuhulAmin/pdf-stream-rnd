@@ -14,6 +14,11 @@ doc.font('BanglaFont')
     .fontSize(25)
     .text("খতিয়ান নং ৮২৩", 500, 55);
 
+doc.image('./image.png', 745, 30, {  // (x, y) position in the PDF
+    width: 100,  // Resize the image width
+    height: 100  // Resize the image height (optional)
+});
+
 doc.font('BanglaFont')
     .fontSize(16)
     .text("আবেদন নম্বর :৩১৩৫৪৫৪",800+50, 30)
