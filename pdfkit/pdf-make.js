@@ -2,27 +2,30 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 
 const doc = new PDFDocument({ size: [1200, 1200] });
+doc.registerFont('BanglaFont', './NotoSerifBengali-Regular.ttf'); 
 const stream = fs.createWriteStream('large.pdf');
 
 doc.pipe(stream);
+doc.font('BanglaFont')
+    .fontSize(16)
+    .text("বাংলাদেশ ফরম নং ৫৪৬২ (সংশোধিত)", 50, 1200);
 
-// ✅ Register Bengali Font
-doc.registerFont('BanglaFont', './NotoSerifBengali-Regular.ttf'); 
 
 // Function to draw a table
 function drawTable(doc, startX, startY, data) {
-    const colWidths = [100, 250, 250, 150]; // Adjusted column widths
+    const colWidths = [50, 250, 250, 150]; // Adjusted column widths
     const rowHeight = 40; // Adjusted row height
 
     // ✅ Draw table headers (English text)
-    doc.font('Helvetica-Bold'); 
+    doc.font('Helvetica-Bold').fontSize(14); 
     let x = startX, y = startY;
     const headers = ['ID', 'Name', 'Role', 'Salary'];
 
-    headers.forEach((header, i) => {
-        doc.text(header, x, y, { width: colWidths[i], align: 'center' });
-        x += colWidths[i];
-    });
+    // headers.forEach((header, i) => {
+    //     doc.text(header, x, y, { width: colWidths[i], align: 'center' });
+    //     doc.rect(x, y, colWidths[i], rowHeight).stroke(); 
+    //     x += colWidths[i];
+    // });
 
     // ✅ Draw rows (Separate fonts for English & Bengali)
     y += rowHeight;
@@ -30,11 +33,10 @@ function drawTable(doc, startX, startY, data) {
     data.forEach(row => {
         x = startX;
         row.forEach((cell, i) => {
+            doc.rect(x, y, colWidths[i], rowHeight).stroke();
             if (typeof cell === 'string' && /[\u0980-\u09FF]/.test(cell)) { 
-                // ✅ Bengali text (Uses BanglaFont)
                 doc.font('BanglaFont');
             } else {
-                // ✅ English text (Uses Helvetica)
                 doc.font('Helvetica');
             }
             doc.text(cell.toString(), x, y, { width: colWidths[i], align: 'center' });
@@ -54,10 +56,10 @@ const tableData = [
 ];
 
 // ✅ Generate 5000 pages with a table on each
-for (let i = 1; i <= 5; i++) {  // Change to 5000 for full test
+for (let i = 0; i <= 5; i++) {  
     doc.addPage();
-    doc.font('Helvetica-Bold').text(`Page ${i}`, 50, 30); // Page number
-    drawTable(doc, 50, 60, tableData); // Draw table
+    doc.font('Helvetica-Bold').text(`Page ${i}`, 50, 30); 
+    drawTable(doc, 50, 60, tableData);
 }
 
 // ✅ Finish writing the PDF
