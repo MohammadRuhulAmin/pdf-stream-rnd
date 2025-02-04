@@ -1,0 +1,10 @@
+*.csv
+*.txt
+*.pdf
+*.mp4
+./destination/dest.mp4
+./writeToPdf/*.pdf 
+./source/source.mp4 
+./destination/dest.mp4
+./query-stream/output.csv
+node_modules
